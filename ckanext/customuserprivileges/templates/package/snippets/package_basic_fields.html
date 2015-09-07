@@ -1,0 +1,6 @@
+{% ckan_extends %}
+
+{% block package_basic_fields_custom %}
+  {% set manager_attrs = {'data-module': 'autocomplete', 'data-module-tags': '', 'data-module-source': '/api/2/util/user/autocomplete?q=?'} %}
+  {{ form.input('managing_users', id='field-managing_users', label=_('Dataset administators'), placeholder=_('Users who can administer this dataset'), value=data.managing_users, error=errors.managing_users, classes=['control-full'], attrs=manager_attrs) }}
+{% endblock %}
