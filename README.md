@@ -24,7 +24,9 @@ Usage
 Extra field for specifying dataset administrators is visible when creating or editing the dataset. Users will be specified by their username.![Extra field](https://i.imgur.com/HVG2ofP.png) 
 
 By default when creating a dataset and not specifying any administrators, only the user who created it can manage it. For other users following applies:
+
 Unowned dataset + dataset administrator = **can edit**
+
 Company dataset + admin or editor within company + dataset administrator = **can edit**
 
 Running tests
