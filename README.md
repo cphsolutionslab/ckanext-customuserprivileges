@@ -40,7 +40,6 @@ pip install -r /usr/lib/ckan/default/src/ckan/dev-requirements.txt
 sudo -u postgres createdb -O ckan_default ckan_test -E utf-8
 #edit test database connection string
 nano /usr/lib/ckan/default/src/ckan/test-core.ini
-nosetests --ckan --with-pylons=test.ini 
 #enter extension directory
 cd /usr/lib/ckan/default/src/ckanext-customuserprivileges
 #run test suite
