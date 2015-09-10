@@ -15,12 +15,10 @@ def managing_users_package_update(context, data_dict):
         check1 = authz.has_user_permission_for_group_or_org(
             package.owner_org, user, 'update_dataset'
         )
-        #If managing users are specified within the organization, only them can edit it
-        #Else only creator can edit the dataset
-        if 'managing_users' in extras and extras['managing_users'] != '':
-            managing_users = extras.get('managing_users', '')
-            managing_users = managing_users.split(',')
-            check1 = check1 and context['auth_user_obj'].name in managing_users
+        #Managing users have to be specified for datasets within an organization
+        managing_users = extras.get('managing_users', '')
+        managing_users = managing_users.split(',')
+        check1 = check1 and context['auth_user_obj'].name in managing_users
     else:
         # If dataset is not owned then we can edit if config permissions allow
         if authz.auth_is_anon_user(context):

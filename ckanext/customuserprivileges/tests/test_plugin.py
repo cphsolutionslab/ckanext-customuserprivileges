@@ -78,7 +78,7 @@ class TestCustomUserPrivileges(object):
         context = {'model': model, 'user': 'lisa'}
         nose.tools.assert_raises(logic.NotAuthorized, helpers.call_auth, 'package_update', context=context, **params)
 
-    def test_owned_dataset_company_users_should_edit(self):
+    def test_owned_dataset_company_users_with_admin_should_edit(self):
         org = factories.Organization()
         fred = factories.User(name='fred')
         bob = factories.User(name='bob')
@@ -94,7 +94,7 @@ class TestCustomUserPrivileges(object):
                   'id': org['id']}
         helpers.call_action('organization_member_create', **member_bob)
 
-        dataset = factories.Dataset(user=fred, owner_org=org['name'])
+        dataset = factories.Dataset(user=fred, owner_org=org['name'], managing_users="bob")
         context = {'model': model, 'user': 'fred'}
         params = {
              'id': dataset['id'],
@@ -109,7 +109,7 @@ class TestCustomUserPrivileges(object):
         nose.tools.assert_raises(logic.NotAuthorized, helpers.call_auth, 'package_update', context=context, **params)
 
 
-    def test_owned_dataset_with_admins_company_users_should_not_edit(self):
+    def test_owned_dataset_only_creator_should_edit(self):
         org = factories.Organization()
         fred = factories.User(name='fred')
         bob = factories.User(name='bob')
@@ -125,16 +125,16 @@ class TestCustomUserPrivileges(object):
                   'id': org['id']}
         helpers.call_action('organization_member_create', **member_bob)
 
-        dataset = factories.Dataset(user=fred, owner_org=org['name'], managing_users="someone")
+        dataset = factories.Dataset(user=fred, owner_org=org['name'], managing_users="alice")
         context = {'model': model, 'user': 'fred'}
         params = {
              'id': dataset['id'],
          }
         result = helpers.call_auth('package_update', context=context, **params)
         assert result == True
+        #Bob is in the organization, but not manager - shouldn't be able to edit
         context = {'model': model, 'user': 'bob'}
         nose.tools.assert_raises(logic.NotAuthorized, helpers.call_auth, 'package_update', context=context, **params)
-        assert result == True
-        #Alice is not in the organization
+        #Alice is not in the organization, but manager (still shouldn't be able to edit)
         context = {'model': model, 'user': 'alice'}
         nose.tools.assert_raises(logic.NotAuthorized, helpers.call_auth, 'package_update', context=context, **params)
